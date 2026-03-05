@@ -11,7 +11,6 @@ def get_embedding(text: str) -> list[float]:
     )
     return response["embedding"]
 
-
 def chat_with_context(prompt: str, context: str, user_profile: dict = None, chat_history: list = None) -> tuple[str, bool]:
     if chat_history is None:
         chat_history = []
