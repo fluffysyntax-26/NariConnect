@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.routers import chat, admin
 from app.db.mongo import close_database
@@ -24,6 +25,15 @@ app = FastAPI(
     description="Backend for SheLeads PPT with Clerk Auth and Ollama RAG",
     version="0.1.0",
     lifespan=lifespan,
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Allow frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(chat.router, prefix="/api")
