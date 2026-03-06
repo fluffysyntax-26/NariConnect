@@ -19,7 +19,7 @@ const AuthenticatedNavbar = () => {
 
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-    { label: 'Financial Schemes', path: '/schemes', icon: <Banknote size={18} /> },
+    { label: 'Schemes', path: '/schemes', icon: <Banknote size={18} /> },
     { label: 'My Applications', path: '/applications', icon: <FileText size={18} /> },
     { label: 'Chat with AI', path: '/chat', icon: <MessageSquare size={18} /> },
     { label: 'Profile', path: '/profile', icon: <UserCircle size={18} /> },

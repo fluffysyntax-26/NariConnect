@@ -10,6 +10,8 @@ import Dashboard from './components/Dashboard';
 import OnboardingForm from './components/OnboardingForm';
 import Profile from './components/Profile';
 import Chat from './components/Chat';
+import SchemeDirectory from './components/SchemeDirectory';
+import SchemeDetails from './components/SchemeDetails';
 
 import AuthenticatedNavbar from './components/AuthenticatedNavbar';
 
@@ -121,6 +123,34 @@ const ClerkProviderWithRoutes = () => {
               <SignedIn>
                 <AuthenticatedNavbar />
                 <Chat />
+              </SignedIn>
+              <SignedOut>
+                <RedirectToSignIn />
+              </SignedOut>
+            </>
+          }
+        />
+        <Route
+          path="/schemes"
+          element={
+            <>
+              <SignedIn>
+                <AuthenticatedNavbar />
+                <SchemeDirectory />
+              </SignedIn>
+              <SignedOut>
+                <RedirectToSignIn />
+              </SignedOut>
+            </>
+          }
+        />
+        <Route
+          path="/schemes/:slug"
+          element={
+            <>
+              <SignedIn>
+                <AuthenticatedNavbar />
+                <SchemeDetails />
               </SignedIn>
               <SignedOut>
                 <RedirectToSignIn />

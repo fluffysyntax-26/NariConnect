@@ -30,3 +30,59 @@ export const chatWithAI = async (message, token, chatHistory = [], userProfile =
     throw error;
   }
 };
+
+export const fetchSchemes = async (token, page = 1, filters = {}) => {
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
+
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: '10',
+    ...filters
+  });
+
+  try {
+    const response = await fetch(`${API_URL}/schemes?${queryParams.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch Schemes Error:', error);
+    throw error;
+  }
+};
+
+export const fetchSchemeDetails = async (token, slug) => {
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/schemes/${slug}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch Scheme Details Error:', error);
+    throw error;
+  }
+};

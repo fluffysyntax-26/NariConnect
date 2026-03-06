@@ -44,7 +44,7 @@ const Navbar = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/dashboard')}
-                  className="bg-rose-500 text-white px-6 py-2 rounded-full font-medium hover:bg-rose-600 transition-colors shadow-lg shadow-rose-500/30"
+                  className="text-gray-600 hover:text-rose-500 font-medium transition-colors"
                 >
                   Dashboard
                 </motion.button>
