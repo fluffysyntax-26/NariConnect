@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 
 
 class UserInput(BaseModel):
@@ -34,6 +34,7 @@ class SchemeResult(BaseModel):
     id: str
     text: str
     metadata: SchemeMetadata
+    deep_details: Optional[dict[str, Any]] = None
 
 
 class ChatResponse(BaseModel):

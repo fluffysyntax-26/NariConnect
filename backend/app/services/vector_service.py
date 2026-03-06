@@ -5,12 +5,16 @@ from qdrant_client.models import Distance, VectorParams, PointStruct, Filter
 from app.config import QDRANT_PATH
 from app.services.ollama_service import get_embedding
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 os.makedirs(QDRANT_PATH, exist_ok=True)
 client = QdrantClient(path=QDRANT_PATH)
 COLLECTION_NAME = "schemes"
 
 
 def load_schemes_from_json(filepath: str) -> list[dict]:
+    if not os.path.isabs(filepath):
+        filepath = os.path.join(BASE_DIR, filepath)
     with open(filepath, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -40,6 +44,7 @@ States: {", ".join(fields.get("beneficiaryState", []))}
             "tags": ", ".join(fields.get("tags", [])),
             "states": ", ".join(fields.get("beneficiaryState", [])),
             "slug": fields.get("slug", ""),
+            "schemeShortTitle": fields.get("schemeShortTitle", ""),
         }
 
         schemes.append({"id": scheme_id, "text": text.strip(), "metadata": metadata})
@@ -61,13 +66,18 @@ def initialize_collection():
     return COLLECTION_NAME
 
 
-def vectorize_schemes(filepath: str = "myscheme_rag_dataset.json"):
+def vectorize_schemes(filepath: str = "myscheme_rag_dataset.json", force: bool = False):
     initialize_collection()
 
     existing = client.count(collection_name=COLLECTION_NAME).count
-    if existing > 0:
+    if existing > 0 and not force:
         print(f"Collection already has {existing} schemes. Skipping vectorization.")
         return {"status": "already_exists", "count": existing}
+
+    if force:
+        client.delete_collection(collection_name=COLLECTION_NAME)
+        initialize_collection()
+        print(f"Re-vectorizing all schemes...")
 
     print("Loading schemes from JSON...")
     schemes = load_schemes_from_json(filepath)
@@ -79,7 +89,7 @@ def vectorize_schemes(filepath: str = "myscheme_rag_dataset.json"):
             print(f"Processing scheme {i}/{len(schemes)}...")
 
         embedding = get_embedding(scheme["text"])
-        
+
         # Use slug as the ID if available in metadata, otherwise use the provided ID
         slug = scheme["metadata"].get("slug", scheme["id"])
 
@@ -111,7 +121,7 @@ def search_schemes(query: str, n_results: int = 5) -> list[dict]:
         vectorize_schemes()
         count = client.count(collection_name=COLLECTION_NAME).count
         if count == 0:
-             raise ValueError("Failed to vectorize schemes.")
+            raise ValueError("Failed to vectorize schemes.")
 
     query_embedding = get_embedding(query)
 
@@ -148,6 +158,7 @@ def search_schemes(query: str, n_results: int = 5) -> list[dict]:
                     "categories": payload.get("categories", ""),
                     "tags": payload.get("tags", ""),
                     "states": payload.get("states", ""),
+                    "schemeShortTitle": payload.get("schemeShortTitle", ""),
                 },
             }
         )

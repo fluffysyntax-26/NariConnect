@@ -9,7 +9,7 @@ async def get_database():
     global _client, _db
     if _client is None:
         _client = AsyncIOMotorClient(MONGO_URI)
-        _db = _client["sheleads"]
+        _db = _client["nariconnect"]
     return _db
 
 
